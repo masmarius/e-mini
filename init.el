@@ -3,9 +3,9 @@
 (setq load-prefer-newer t)
 
 ;; basic keybinding setup
-(setopt w32-pass-lwindow-to-system nil)
-(setopt w32-lwindow-modifier 'super) ; Left Windows key
-(setopt w32-enable-caps-lock nil)
+(setopt w32-pass-lwindow-to-system nil
+        w32-lwindow-modifier 'super ;left Windows key
+        w32-enable-caps-lock nil)
 (w32-register-hot-key [M-tab])
 (w32-register-hot-key [s-])
 (w32-register-hot-key [A-])
@@ -164,6 +164,10 @@
   (setopt org-startup-indented t
           org-pretty-entities t))
 
+(use-package magit
+  :ensure t
+  :defer t)
+
 (use-package org-web-tools
   :ensure t
   :bind
@@ -174,7 +178,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(org-web-tools use-package-chords)))
+ '(package-selected-packages '(magit org-web-tools)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
