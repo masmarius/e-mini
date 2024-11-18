@@ -135,9 +135,6 @@
   ("<capslock> 1" . delete-other-windows)
   ("<capslock> 2" . split-window-below)
   ("<capslock> 3" . split-window-right))
-  ;:chords
-  ;(("ff" . ido-find-file)
-  ; ("ss" . save-buffer)))
 
 (use-package windmove
   :config 
