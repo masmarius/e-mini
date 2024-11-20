@@ -1,6 +1,6 @@
 ;; -*- coding: utf-8; lexical-binding: t; -*-
 
-(setq load-prefer-newer t)
+(setopt load-prefer-newer t)
 
 ;; basic keybinding setup
 (setopt w32-pass-lwindow-to-system nil
@@ -13,9 +13,9 @@
 ;; UTF-8 as default encoding
 
 (set-language-environment "utf-8")
-(set-default-coding-systems 'utf-8-unix)
-(set-keyboard-coding-system 'utf-8-unix)
-(set-terminal-coding-system 'utf-8-unix)
+(set-default-coding-systems 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
 
 ;; initial window and default window
 
@@ -26,14 +26,25 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
-(push '(background-color . "white smoke") default-frame-alist) ;bg color
+(push '(background-color . "white smoke") default-frame-alist) ;light bg color
 
-(set-face-attribute 'default nil :family "Consolas" :height 110) ;default font
+;; font defaults
+(set-face-attribute 'default nil :family "Consolas" :height 110)
 
 ;; load emacs package system. Add GNU, MELPA repository.
 (require 'package)
   (add-to-list 'package-archives '("gnu"   . "https://elpa.gnu.org/packages/"))
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+
+;; Make sure that we dont' clutter the init file
+(setopt custom-file (expand-file-name "custom.el" user-emacs-directory))
+
+;; Custom lisp directory
+(setopt custom-elisp-dir
+      (expand-file-name "lisp" user-emacs-directory))
+
+(add-to-list 'load-path custom-elisp-dir)
 
 (use-package use-package
   :custom
@@ -72,6 +83,7 @@
           recentf-mode t                ;recently opened files
           ;; user interface
           line-spacing 2
+          fill-column 80
           inhibit-startup-screen t
           column-number-mode t
           blink-cursor-mode 0
@@ -116,14 +128,14 @@
           mark-ring-max 10
           global-mark-ring-max 10)
   (ido-mode t)                          ;enable ido-mode
-  ;; load .el files on the 'lisp' dir too
-  (add-to-list 'load-path (concat user-emacs-directory (convert-standard-filename "lisp/")))
   :bind
   ("C-c c" . org-capture)
   ("C-c l" . org-store-link)
   ("M-<SPC>" . hippie-expand)
+  
   ("<capslock> 5 o" . other-frame)      ;frames
   ("<capslock> 5 2" . make-frame)
+  
   ("C-<tab>" . ido-switch-buffer)       ;buffers
   ("<capslock> k" . ido-kill-buffer)
   ("M-<tab>" . next-buffer)
@@ -142,8 +154,7 @@
   (setopt framemove-hook-into-windmove t))
 
 (use-package text-mode
-  :ensure
-  nil
+  :ensure nil
   :hook
   (text-mode . visual-line-mode)
   :custom
@@ -162,6 +173,7 @@
   :defer t
   :config
   (setopt org-startup-indented t
+          org-startup-folded t
           org-pretty-entities t))
 
 (use-package magit
