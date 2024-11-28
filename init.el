@@ -2,6 +2,36 @@
 
 (setopt load-prefer-newer t)
 
+;; initial frame and default window
+
+(add-to-list 'default-frame-alist '(height . 45)) ;initial frame size
+(add-to-list 'default-frame-alist '(width . 90))
+(push '(background-color . "white smoke") default-frame-alist) ;light bg color
+
+(tooltip-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+
+(setopt frame-resize-pixelwise t
+            frame-inhibit-implied-resize t
+            frame-title-format '("%b")
+            ring-bell-function 'ignore
+            use-dialog-box t ; only for mouse events, which I seldom use
+            use-short-answers t
+            inhibit-splash-screen t
+            inhibit-startup-screen t
+            inhibit-x-resources t
+            inhibit-startup-echo-area-message user-login-name ; read the docstring
+            inhibit-startup-buffer-menu nil)
+
+;; git-scoop setup
+(setq my-git-path
+      (concat (getenv "USERPROFILE") "\\scoop\\apps\\Git\\current"))
+;; linux-find-fix for windows (depends on git install)
+(setq my-git-find-executable
+      (concat my-git-path "\\usr\\bin\\find.exe"))
+(setq find-program my-git-find-executable)
+
 ;; basic keybinding setup
 (setopt w32-pass-lwindow-to-system nil
         w32-lwindow-modifier 'super ;left Windows key
@@ -16,17 +46,6 @@
 (set-default-coding-systems 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
-
-;; initial window and default window
-
-(add-to-list 'default-frame-alist '(height . 45)) ;initial frame size
-(add-to-list 'default-frame-alist '(width . 90))
-
-(tooltip-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-
-(push '(background-color . "white smoke") default-frame-alist) ;light bg color
 
 ;; font defaults
 (set-face-attribute 'default nil :family "Consolas" :height 110)
@@ -103,17 +122,6 @@
           dired-listing-switches "-alh"
           ls-lisp-dirs-first t
           ls-lisp-ignore-case t         ;ignore case order
-          ;; completion
-          ido-enable-flex-matching t
-          completion-styles '(flex)
-          ido-everywhere t
-          ido-enable-last-directory-history t
-          ido-max-work-directory-list 30
-          ido-max-work-file-list 50
-          ido-max-prospects 8
-          ido-confirm-unique-completion t
-          ;ido-create-new-buffer 'always
-          ido-use-virtual-buffers t
           ;; mouse
           mouse-wheel-progressive-speed nil
           scroll-conservatively 101
@@ -127,7 +135,6 @@
           set-mark-command-repeat-pop t ;repeated C-u set-mark-command move cursor to previous mark in current buffer
           mark-ring-max 10
           global-mark-ring-max 10)
-  (ido-mode t)                          ;enable ido-mode
   :bind
   ("C-c c" . org-capture)
   ("C-c l" . org-store-link)
@@ -136,10 +143,11 @@
   ("<capslock> 5 o" . other-frame)      ;frames
   ("<capslock> 5 2" . make-frame)
   
-  ("C-<tab>" . ido-switch-buffer)       ;buffers
+  ("C-<tab>" . consult-buffer)       ;buffers
   ("<capslock> k" . ido-kill-buffer)
   ("M-<tab>" . next-buffer)
-  ("<capslock> 1" . delete-other-windows)
+  
+  ("<capslock> 1" . delete-other-windows) ;windows
   ("<capslock> 2" . split-window-below)
   ("<capslock> 3" . split-window-right))
 
@@ -184,3 +192,31 @@
   :ensure t
   :bind
   (("C-c w w" . org-web-tools-insert-link-for-url)))
+
+(use-package consult
+  :ensure t)
+
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode)
+  :custom
+  (vertico-sort-function 'vertico-sort-history-alpha))
+
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides
+   '((file (styles partial-completion)))))
+
+;; Enable richer annotations using the Marginalia package
+
+(use-package marginalia
+  :ensure t
+  :init
+  (marginalia-mode))
+
+(use-package visual-fill-column
+  :ensure t)
