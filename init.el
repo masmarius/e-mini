@@ -5,8 +5,8 @@
 ;; initial frame and default window
 
 (add-to-list 'default-frame-alist '(height . 45)) ;initial frame size
-(add-to-list 'default-frame-alist '(width . 160))
-(push '(background-color . "ivory2") default-frame-alist) ;light bg color
+(add-to-list 'default-frame-alist '(width . 120))
+(push '(background-color . "#fffff8") default-frame-alist) ;light bg color
 
 (tooltip-mode -1)
 (tool-bar-mode -1)
@@ -16,7 +16,7 @@
             frame-inhibit-implied-resize t
             frame-title-format '("%F--%b-[%f]--%Z")
             ring-bell-function 'ignore
-            use-dialog-box t ; only for mouse events, which I seldom use
+            use-dialog-box t 
             use-short-answers t
             inhibit-splash-screen t
             inhibit-startup-screen t
@@ -52,7 +52,6 @@
        (set-face-attribute 'default nil :family "JetBrainsMono NFP" :height 100))
       ((find-font (font-spec :name "Consolas"))
        (set-face-attribute 'default nil :family "Consolas" :height 110)))
-
 
 ;; load emacs package system. Add GNU, MELPA repository.
 (require 'package)
@@ -94,7 +93,7 @@
   :config
   (setopt make-backup-files nil         ;no backups or lockfiles
           create-lockfiles nil
-          auto-save-default nil         ;filenames with #hashtags#
+          auto-save-default nil         ;no filenames with #hashtags#
           ;; keytabs
           tab-width 4  
           indent-tabs-mode nil
@@ -142,9 +141,7 @@
           ido-max-work-directory-list 30
           ido-max-work-file-list 50
           ido-max-prospects 8
-          ;; Display ido results vertically, rather than horizontally
-          ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]"))
-          ;ido-confirm-unique-completion t
+          ido-confirm-unique-completion nil
           ido-create-new-buffer 'always
           ido-use-virtual-buffers t
           ;; mouse
@@ -172,15 +169,12 @@
           mark-ring-max 10
           global-mark-ring-max 10)
   (ido-mode 1)
-  (winner-mode t)
   (global-hl-line-mode 1)
   :bind
-  ("C-c c" . org-capture)
-  ("C-c l" . org-store-link)
   ("M-<SPC>" . hippie-expand)
   
-  ("<capslock> o" . other-frame)      ;frames
-  ("<capslock> n" . make-frame)
+  ("M-o" . other-frame)      ;frames
+  ("M-n" . make-frame)
   
   ("C-<tab>" . ido-switch-buffer)       ;buffers
   ("<capslock> k" . ido-kill-buffer)
@@ -222,13 +216,14 @@
           org-startup-folded t
           org-level-color-stars-only t
           org-hide-emphasis-markers t
-          org-outline-path-complete-in-steps nil)) ;for ido completion (?)
+          org-outline-path-complete-in-steps nil ;for ido completion (?)
+          org-agenda-files (list "~/File/11-notes/org/projects.org"
+                                 "~/File/11-notes/org/areas.org" ))
+  :bind
+  ("C-c c" . org-capture)
+  ("C-c l" . org-store-link)
+  ("C-c a" . org-agenda))
 
 (use-package magit
   :ensure t
   :defer t)
-
-(use-package org-web-tools
-  :ensure t
-  :bind
-  (("C-c w w" . org-web-tools-insert-link-for-url)))
